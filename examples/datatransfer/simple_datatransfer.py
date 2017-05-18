@@ -81,13 +81,13 @@ def example_datatransfer():
             task.arguments         = ["Hello from task %s" % t]
             pilotjob.submit_compute_unit(task)
 
-        print "Waiting for tasks to finish..."
+        print("Waiting for tasks to finish...")
         pilotjob.wait()
-        print "FINISHED"
+        print("FINISHED")
         pilot_service.cancel()
 
-    except Exception, ex:
-        print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+        print("AN ERROR OCCURED: %s" % ((str(ex))))
         traceback.print_exc()
         return(-1)
 
@@ -95,19 +95,19 @@ def example_datatransfer():
     # Step 2: Retrieve output files with SAGA #
     ###########################################
     try:
-        print "Transferring output files back to local machine..."
-        for task_id, output_path in output_paths.iteritems():
+        print("Transferring output files back to local machine...")
+        for task_id, output_path in output_paths.items():
             remote_file = "sftp://%s/%s/stdout" % (EXEC_HOST, output_path)
             local_file  = "file://localhost/%s/task-%s.out" % (os.getcwd(), task_id)
 
             f = saga.filesystem.File(remote_file)
             f.copy(local_file)
-            print "Copied %s -> %s" % (remote_file, local_file)
+            print("Copied %s -> %s" % (remote_file, local_file))
 
-        print "FINISHED"
+        print("FINISHED")
 
-    except Exception, ex:
-        print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+        print("AN ERROR OCCURED: %s" % ((str(ex))))
         traceback.print_exc()
         return(-1)
 

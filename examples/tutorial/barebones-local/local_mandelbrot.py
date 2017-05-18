@@ -62,12 +62,12 @@ if __name__ == "__main__":
                 
     # Preparing the final image
     for image in workdir.list('*.gif'):
-        print ' * Copying %s/%s back to %s' % (workdir.get_url(), image, os.getcwd())
+        print(' * Copying %s/%s back to %s' % (workdir.get_url(), image, os.getcwd()))
         workdir.copy(image, 'sftp://localhost/%s/' % os.getcwd()) 
 
     # stitch together the final image
     fullimage = Image.new('RGB',(imgx, imgy),(255,255,255))
-    print ' * Stitching together the whole fractal: mandelbrot_full.png'
+    print(' * Stitching together the whole fractal: mandelbrot_full.png')
     for x in range(0, tilesx):
         for y in range(0, tilesy):
             partimage = Image.open('tile_x%s_y%s.gif' % (x, y))

@@ -13,7 +13,7 @@ import subprocess
 try:
     import saga
 except:
-    print "Installing BigJob and SAGA/Python."
+    print("Installing BigJob and SAGA/Python.")
 
 if sys.version_info < (2, 6):
     sys.stderr.write("BigJob requires Python 2.6 and above. Installation unsuccessful!")
@@ -24,18 +24,18 @@ VERSION_FILE="VERSION"
 
 def update_version():
     if not os.path.isdir(".git"):
-        print "This does not appear to be a Git repository."
+        print("This does not appear to be a Git repository.")
         return
     try:
         p = subprocess.Popen(["git", "describe",
                               "--tags", "--always"],
                              stdout=subprocess.PIPE)
     except EnvironmentError:
-        print "Warning: Unable to run git, not modifying VERSION"
+        print("Warning: Unable to run git, not modifying VERSION")
         return
     stdout = p.communicate()[0]
     if p.returncode != 0:
-        print "Warning: Unable to run git, not modifying VERSION"
+        print("Warning: Unable to run git, not modifying VERSION")
         return
     
     ver = stdout.strip()
@@ -43,7 +43,7 @@ def update_version():
     f = open(fn, "w")
     f.write(ver)
     f.close()
-    print "BigJob VERSION: '%s'" % ver
+    print("BigJob VERSION: '%s'" % ver)
 
 
 def get_version():

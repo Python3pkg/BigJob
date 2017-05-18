@@ -44,15 +44,15 @@ def main():
         #   - see https://github.com/saga-project/BigJob/issues/121
         #   - see https://github.com/saga-project/BigJob/issues/131
         for i, pj in enumerate(pjs):
-            print "cancel %3d" % i
+            print("cancel %3d" % i)
             pj.cancel()
 
         pilot_service.cancel()
 
         return(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

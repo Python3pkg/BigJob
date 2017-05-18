@@ -85,7 +85,7 @@ class AdvertCoordinationAdaptor:
     @classmethod
     def update_pd(cls, pd):
         if len(pd.data_units) > 0:
-            du_urls = [i.url for i in pd.data_units.values()]
+            du_urls = [i.url for i in list(pd.data_units.values())]
             cls.__store_entry(cls.__remove_dbtype(pd.url)+"/data-units", du_urls)
         cls.__store_entry(cls.__remove_dbtype(pd.url)+"/pilot-data", pd.to_dict())
     
@@ -147,10 +147,10 @@ class AdvertCoordinationAdaptor:
         cls.__store_entry(cls.__remove_dbtype(cds_url)+"/cds/", pjs_urls)
         
         # currently managed PDs and WUs
-        pd_urls = [i.url for i in cds.data_units.values()]
+        pd_urls = [i.url for i in list(cds.data_units.values())]
         cls.__store_entry(cls.__remove_dbtype(cds_url)+"/du/", pd_urls)
         
-        wu_urls = [i.url for i in cds.compute_units.values()]
+        wu_urls = [i.url for i in list(cds.compute_units.values())]
         cls.__store_entry(cls.__remove_dbtype(cds_url)+"/cu/", wu_urls)
             
         

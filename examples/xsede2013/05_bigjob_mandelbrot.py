@@ -84,23 +84,23 @@ def main():
                 task_desc.number_of_processes = 1
 
                 task = pilotjob.submit_compute_unit(task_desc)
-                print "* Submitted task '%s' to %s" % (task.get_id(), HOSTNAME)
+                print("* Submitted task '%s' to %s" % (task.get_id(), HOSTNAME))
                 tasks.append(task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for tasks to finish..."
+        print("Waiting for tasks to finish...")
         pilotjob.wait()
         # ---------------------------------------------------------------------
 
         # copy image tiles back to our 'local' directory
         for image in workdir.list('*.gif'):
-            print ' * Copying %s/%s back to %s' % (workdir.get_url(),
-                                                   image, os.getcwd())
+            print(' * Copying %s/%s back to %s' % (workdir.get_url(),
+                                                   image, os.getcwd()))
             workdir.copy(image, 'file://localhost/%s/' % os.getcwd())
 
         # stitch together the final image
         fullimage = Image.new('RGB', (IMGX, IMGY), (255, 255, 255))
-        print ' * Stitching together the whole fractal: mandelbrot_full.gif'
+        print(' * Stitching together the whole fractal: mandelbrot_full.gif')
         for x in range(0, TILESX):
             for y in range(0, TILESY):
                 partimage = Image.open('tile_x%s_y%s.gif' % (x, y))
@@ -111,8 +111,8 @@ def main():
 
         return(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

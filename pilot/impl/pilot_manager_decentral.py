@@ -9,10 +9,10 @@ import time
 import threading
 import logging
 import pdb
-import Queue
+import queue
 import uuid
 import traceback
-import urlparse
+import urllib.parse
 
 import bigjob
 from bigjob import logger, bigjob, subjob, description
@@ -70,7 +70,7 @@ class ComputeDataServiceDecentral(ComputeDataService):
            
         # Background Thread for scheduling
         self.scheduler = Scheduler()
-        self.du_queue = Queue.Queue()
+        self.du_queue = queue.Queue()
         
         self.stop=threading.Event()
         self.scheduler_thread=threading.Thread(target=self._scheduler_thread)
@@ -170,9 +170,9 @@ class ComputeDataServiceDecentral(ComputeDataService):
     def __wait_for_du(self, compute_unit):
         """ wait for Data Units that are required for Compute Unit """
         cu_description = compute_unit.compute_unit_description
-        if cu_description.has_key("input_data") and len(cu_description["input_data"])>0:
+        if "input_data" in cu_description and len(cu_description["input_data"])>0:
             for input_du_url in cu_description["input_data"]:
-                for du in self.data_units.values():
+                for du in list(self.data_units.values()):
                     if input_du_url == du.get_url():
                         logger.debug("Wait for DU: %s"%du.get_url())
                         du.wait()
@@ -203,11 +203,11 @@ class ComputeDataServiceDecentral(ComputeDataService):
     
     def list_data_units(self):
         """ List all DUs of CDS """
-        return self.data_units.items()
+        return list(self.data_units.items())
     
     
     def get_data_unit(self, du_id):
-        if self.data_units.has_key(du_id):
+        if du_id in self.data_units:
             return self.data_units[du_id]
         return None
     
@@ -241,8 +241,8 @@ class ComputeDataServiceDecentral(ComputeDataService):
             the user has cancelled a CU or DU.            
         """
         try:
-            dus = self.data_units.values()
-            cus = self.compute_units.values()
+            dus = list(self.data_units.values())
+            cus = list(self.compute_units.values())
             pilots = []
             for i in self.pilot_job_services:
                 pilots.extend(i.list_pilots())
@@ -298,9 +298,9 @@ class ComputeDataServiceDecentral(ComputeDataService):
             logger.debug("### END WAIT ###")
         except:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            print "*** print_tb:"
+            print("*** print_tb:")
             traceback.print_tb(exc_traceback, limit=1, file=sys.stderr)
-            print "*** print_exception:"
+            print("*** print_exception:")
             traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stderr)
             logger.debug("Ctrl-c detected. Terminating ComputeDataService...")
@@ -363,7 +363,7 @@ class ComputeDataServiceDecentral(ComputeDataService):
                     else:
                         self.du_queue.task_done() 
                         self.du_queue.put(du)
-            except Queue.Empty:
+            except queue.Empty:
                 pass
                
             if self.du_queue.empty():

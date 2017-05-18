@@ -46,8 +46,8 @@ if __name__ == "__main__":
     while compute_unit != State.Done:
         print("Final state check...")
         state_cu = compute_unit.get_state()
-        print "PCS State %s" % pilot_compute_service
-        print "CU: %s State: %s"%(compute_unit, state_cu)
+        print("PCS State %s" % pilot_compute_service)
+        print("CU: %s State: %s"%(compute_unit, state_cu))
         if state_cu==State.Done:
             break
         time.sleep(2)  

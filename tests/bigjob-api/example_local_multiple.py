@@ -74,7 +74,7 @@ if __name__ == "__main__":
     
     ##########################################################################################
 
-    print "Start Pilot Job/BigJob at: " + lrms_url
+    print("Start Pilot Job/BigJob at: " + lrms_url)
     bj = bigjob(COORDINATION_URL)
     bj.start_pilot_job( lrms_url,
                         number_of_processes,
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                         walltime,
                         processes_per_node)
 
-    print "Pilot Job/BigJob URL: " + bj.get_url() + " State: " + str(bj.get_state())
+    print("Pilot Job/BigJob URL: " + bj.get_url() + " State: " + str(bj.get_state()))
 
     ##########################################################################################
     # Submit SubJob through BigJob
@@ -107,5 +107,5 @@ if __name__ == "__main__":
         job_start_times[sj]=time.time()
         job_states[sj] = sj.get_state()
 
-    print "Terminating application. You can reconnect to BJ via the following URL: %s"%bj.get_url()
+    print("Terminating application. You can reconnect to BJ via the following URL: %s"%bj.get_url())
 

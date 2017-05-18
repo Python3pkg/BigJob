@@ -41,7 +41,7 @@ class BigJobCLI(object):
         pilot_compute = pilot_compute_service.create_pilot(pilot_compute_description=pilot_compute_description)
         pilot_url = pilot_compute.get_url()
         self.pilots.append(pilot_url)
-        print("Started Pilot: %s"%(pilot_url))
+        print(("Started Pilot: %s"%(pilot_url)))
         self.__persist()
         
 
@@ -53,26 +53,26 @@ class BigJobCLI(object):
         
     
     def list_pilots(self):
-        print "\nPilot Compute\t\t\t\t\t\t\t\t\tState"
-        print "-----------------------------------------------------------------------------------------------------"
+        print("\nPilot Compute\t\t\t\t\t\t\t\t\tState")
+        print("-----------------------------------------------------------------------------------------------------")
         if len(self.pilots)==0:
-            print "No pilot found"
+            print("No pilot found")
         for i in self.pilots:
             pilot_compute = PilotCompute(pilot_url=i)
-            print "%s\t%s"%(pilot_compute.get_url(), pilot_compute.get_state())
-        print ""
+            print("%s\t%s"%(pilot_compute.get_url(), pilot_compute.get_state()))
+        print("")
         
     
     def list_cus(self, pilot_url):
         pilot_compute = PilotCompute(pilot_url=pilot_url)
         cus = pilot_compute.list_compute_units()
         counter=1
-        print "\nPilot Compute: %s"%(pilot_compute.get_url())
-        print "State: %s"%(pilot_compute.get_state())
-        print "#\tCompute Unit\t\t\t\t\tState\tQueue\tRuntime"
-        print "-----------------------------------------------------------------------------------------"
+        print("\nPilot Compute: %s"%(pilot_compute.get_url()))
+        print("State: %s"%(pilot_compute.get_state()))
+        print("#\tCompute Unit\t\t\t\t\tState\tQueue\tRuntime")
+        print("-----------------------------------------------------------------------------------------")
         if len(cus)==0:
-            print "No Compute Unit found."
+            print("No Compute Unit found.")
         for i in cus:
             url = i.get_url()
             short_url = url[url.index("sj"):]
@@ -89,13 +89,13 @@ class BigJobCLI(object):
                 
             state = i.get_state()
             details=i.get_details()
-            if details.has_key("start_time") and details.has_key("end_queue_time"):
+            if "start_time" in details and "end_queue_time" in details:
                 queue_time = float(details["end_queue_time"]) - float(details["start_time"])
-            if details.has_key("end_time") and details.has_key("end_queue_time"):
+            if "end_time" in details and "end_queue_time" in details:
                 run_time = float(details["end_time"]) - float(details["end_queue_time"])
-            print "%d\t%s\t\t%s\t%.1f\t%.1f"%(counter, short_url, state, queue_time, run_time)
+            print("%d\t%s\t\t%s\t%.1f\t%.1f"%(counter, short_url, state, queue_time, run_time))
             counter = counter + 1 
-        print ""
+        print("")
             
 
     def submit_cu(self, pilot_url, command):
@@ -119,24 +119,24 @@ class BigJobCLI(object):
     def submit_cu_by_description(self, pilot_url, compute_unit_description={}):
         pilot_compute = PilotCompute(pilot_url=pilot_url)
         compute_unit = pilot_compute.submit_compute_unit(compute_unit_description)
-        print "Started ComputeUnit: %s"%(compute_unit.get_url())
+        print("Started ComputeUnit: %s"%(compute_unit.get_url()))
         return compute_unit
             
         
     def run_cu(self, pilot_url, command):
         """ submits CU and waits for completion """
         compute_unit=self.submit_cu(pilot_url, command)
-        print "Waiting for termination"
+        print("Waiting for termination")
         compute_unit.wait()
-        print "CU %s terminated"%compute_unit.get_url()
+        print("CU %s terminated"%compute_unit.get_url())
         return compute_unit
     
     
     def run_cu_by_description(self, pilot_url, compute_unit_description={}):
         compute_unit=self.submit_cu_by_description(pilot_url, compute_unit_description)
-        print "Waiting for termination"
+        print("Waiting for termination")
         compute_unit.wait()
-        print "CU %s terminated"%compute_unit.get_url()
+        print("CU %s terminated"%compute_unit.get_url())
         return compute_unit
     
     
@@ -148,18 +148,18 @@ class BigJobCLI(object):
     def cancel_cu(self, cu_url):
         compute_unit = ComputeUnit(cu_url=cu_url)
         compute_unit.cancel()
-        print("Terminated CU: %s"%(cu_url))
+        print(("Terminated CU: %s"%(cu_url)))
     
     
     def get_cu_state(self, cu_url):
         compute_unit = ComputeUnit(cu_url=cu_url)
-        print "Compute Unit: %s State: %s"%(cu_url, compute_unit.get_state())
+        print("Compute Unit: %s State: %s"%(cu_url, compute_unit.get_state()))
     
     ###########################################################################
     # auxiliary methods
 
     def version(self):
-        print "BigJob Version: " + bigjob.version
+        print("BigJob Version: " + bigjob.version)
     
     def clean(self):
         os.remove(self.__get_save_filename())

@@ -80,11 +80,11 @@ class RedisDownloader(object):
 
 if __name__ == '__main__':
     if len(sys.argv)>1:
-        print "Get data from " + sys.argv[1]
+        print("Get data from " + sys.argv[1])
         rd = RedisDownloader(sys.argv[1])
         pilots = rd.get_pilots()
         cus = rd.get_cus()
-        print "Loaded Redis data: %d pilots, %d cus"%(len(pilots), len(cus))
+        print("Loaded Redis data: %d pilots, %d cus"%(len(pilots), len(cus)))
     else:
         for i in REDIS_URLS:
             rd = RedisDownloader(i)

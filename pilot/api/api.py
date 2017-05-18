@@ -1,5 +1,5 @@
-import compute.api
-import data.api
+from . import compute.api
+from . import data.api
 
 class PilotError(Exception):
     def __init__(self, value):

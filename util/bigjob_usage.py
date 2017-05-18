@@ -11,7 +11,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os, sys
-import archive
+from . import archive
 import datetime
 import ast
 
@@ -26,7 +26,7 @@ if os.path.exists("cus.df") and os.path.exists("pilot.df"):
 
     max_cus_date = cus_df.index.max()
     max_pilots_date = pilot_df.index.max()
-    print "Restored data frames until %s"%max_cus_date
+    print("Restored data frames until %s"%max_cus_date)
 
 # <codecell>
 
@@ -117,11 +117,11 @@ runtimes.describe()
 
 # <codecell>
 
-print "Number of Pilots: %d Number CUs: %d Executed since: %s"%(len(pilots), len(cus), str(cus_df.index.min()))
+print("Number of Pilots: %d Number CUs: %d Executed since: %s"%(len(pilots), len(cus), str(cus_df.index.min())))
 
 # <codecell>
 
-pilots = [i for i in pilots if i.has_key("start_time")]
+pilots = [i for i in pilots if "start_time" in i]
 max_pilot_date = None
 try:
     max_pilot_date = max_pilot_date.index.max()

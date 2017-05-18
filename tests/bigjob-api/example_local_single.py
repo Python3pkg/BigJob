@@ -62,7 +62,7 @@ def main():
    
     ##########################################################################################
 
-    print "Start Pilot Job/BigJob at: " + lrms_url
+    print("Start Pilot Job/BigJob at: " + lrms_url)
     bj = bigjob(COORDINATION_URL)
     bj.start_pilot_job( lrms_url,
                         number_of_processes,
@@ -73,7 +73,7 @@ def main():
                         walltime,
                         processes_per_node)
     
-    print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state())
+    print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state()))
 
     ##########################################################################################
     # Submit SubJob through BigJob
@@ -96,7 +96,7 @@ def main():
     # busy wait for completion
     while 1:
         state = str(sj.get_state())
-        print "state: " + state
+        print("state: " + state)
         if(state=="Failed" or state=="Done"):
             break
         time.sleep(2)

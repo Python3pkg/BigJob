@@ -9,7 +9,7 @@ import random
 import threading
 import time
 import pdb
-import Queue
+import queue
 import socket
 import tldextract
 tldextract.tldextract.LOG.setLevel(logging.WARNING)
@@ -113,7 +113,7 @@ class PilotData(PilotData):
         elif pd_url != None:
             logger.warn("Reconnect to PilotData: %s"%pd_url)
             dictionary = CoordinationAdaptor.get_pd(pd_url)
-            if dictionary.has_key("security_context"):
+            if "security_context" in dictionary:
                 self.security_context=dictionary["security_context"]
             pd_dict = eval(dictionary["pilot_data"])
             for i in pd_dict:
@@ -181,7 +181,7 @@ class PilotData(PilotData):
                 du.wait()
                 state = du.get_state()           
                 #state = job_detail["state"]                
-                if result_map.has_key(state)==False:
+                if (state in result_map)==False:
                     result_map[state]=1
                 else:
                     result_map[state] = result_map[state]+1
@@ -242,7 +242,7 @@ class PilotData(PilotData):
         
         if self.pilot_data_description!=None:
             self.service_url=self.pilot_data_description["service_url"]
-            if self.pilot_data_description.has_key("size"):
+            if "size" in self.pilot_data_description:
                 self.size = self.pilot_data_description["size"]
             
             # initialize file adaptor
@@ -313,7 +313,7 @@ class PilotData(PilotData):
     def create_pilot_data_from_dict(cls, pd_dict):
         """Restore Pilot Data from dictionary"""
         pd = PilotData()
-        for i in pd_dict.keys():
+        for i in list(pd_dict.keys()):
             pd.__setattr__(i, pd_dict[i])
         pd.__initialize_pilot_data()
         logger.debug("created pd " + str(pd))
@@ -374,14 +374,14 @@ class PilotDataService(PilotDataService):
     
     def get_pilot(self, pd_id):
         """ Reconnect to an existing pilot. """
-        if self.pilot_data.has_key(pd_id):
+        if pd_id in self.pilot_data:
             return self.pilot_data[pd_id]
         return None
 
 
     def list_pilots(self):
         """ List all PDs of PDS """
-        return self.pilot_data.values()
+        return list(self.pilot_data.values())
     
 
     def cancel(self):
@@ -393,14 +393,14 @@ class PilotDataService(PilotDataService):
             Return value:
             Result of operation
         """
-        for i in self.pilot_data.values():
+        for i in list(self.pilot_data.values()):
             i.cancel()
  
  
     def wait(self):
         """ Wait until all managed PD (of this Pilot Data Service) enter a final state""" 
 
-        for i in self.pilot_data.values():
+        for i in list(self.pilot_data.values()):
             i.wait()
  
  
@@ -478,7 +478,7 @@ class DataUnit(DataUnit):
             self.pilot_data=[]
             self.state = State.New
             self.data_unit_items=[]
-            if self.data_unit_description.has_key("file_urls"):
+            if "file_urls" in self.data_unit_description:
                 self.data_unit_items = DataUnitItem.create_data_unit_list(self, self.data_unit_description["file_urls"]) 
 
             self.url = None
@@ -795,7 +795,7 @@ class DataUnitItem(object):
     def create_data_unit_from_dict(cls, du_dict):
         du = DataUnitItem()
         logger.debug("Restore DU: " + str(du_dict))
-        for i in du_dict.keys():
+        for i in list(du_dict.keys()):
             logger.debug("Set attribute: %s", i)
             du.__setattr__(i, du_dict[i])
         return du
@@ -822,7 +822,7 @@ def test_pd_reconnect():
     du_url = "redis://localhost/bigdata:pds-f31a670c-e3f6-11e1-afaf-705681b3df0f:pd-f31c47b8-e3f6-11e1-af44-705681b3df0f:du-f4debce8-e3f6-11e1-8399-705681b3df0f"
     pd_url = __get_pd_url(du_url)
     pd = PilotData(pd_url=pd_url)
-    print str(pd.list_data_units())
+    print(str(pd.list_data_units()))
     du = pd.get_du(du_url)
     
     #du = DataUnit(du_url="redis://localhost/bigdata:pds-32d63b2e-df05-11e1-a329-705681b3df0f:pd-37674138-df05-11e1-80d0-705681b3df0f:du-3b8d428c-df05-11e1-af2a-705681b3df0f")

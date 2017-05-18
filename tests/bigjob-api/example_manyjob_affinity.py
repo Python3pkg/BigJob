@@ -41,7 +41,7 @@ def has_finished(state):
 """ Test Job Submission via ManyJob abstraction """
 if __name__ == "__main__":
     try:
-        print "ManyJob load test with " + str(NUMBER_JOBS) + " jobs."
+        print("ManyJob load test with " + str(NUMBER_JOBS) + " jobs.")
         starttime=time.time()
 
         # submit via mj abstraction
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         #                       "queue" : "workq", "bigjob_agent": (BIGJOB_HOME+"/bigjob_agent_launcher.sh"), 
         #                       "working_directory": (os.getcwd() + "/agent"), "walltime":10, "affinity" : "affinity1"})
 
-        print "Create manyjob service "
+        print("Create manyjob service ")
         mjs = many_job_affinity_service(resource_list, COORDINATION_URL)
         
         jobs = []
@@ -74,37 +74,37 @@ if __name__ == "__main__":
             jd.environment = ["affinity=affinity1","VAR=USER"]
             subjob = mjs.create_job(jd)
             subjob.run()
-            print "Submited sub-job " + "%d"%i + "."
+            print("Submited sub-job " + "%d"%i + ".")
             jobs.append(subjob)
             job_start_times[subjob]=time.time()
             job_states[subjob] = subjob.get_state()
-        print "************************ All Jobs submitted ************************"
+        print("************************ All Jobs submitted ************************")
         while 1: 
             finish_counter=0
             result_map = {}
             for i in range(0, NUMBER_JOBS):
                 old_state = job_states[jobs[i]]
                 state = jobs[i].get_state()
-                if result_map.has_key(state) == False:
+                if (state in result_map) == False:
                     result_map[state]=0
                 result_map[state] = result_map[state]+1
                 #print "counter: " + str(i) + " job: " + str(jobs[i]) + " state: " + state
                 if old_state != state:
-                    print "Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state
+                    print("Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state)
                 if old_state != state and has_finished(state)==True:
-                    print "Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s."
+                    print("Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s.")
                 if has_finished(state)==True:
                     finish_counter = finish_counter + 1
                 job_states[jobs[i]]=state
 
-            print "Current states: " + str(result_map) 
+            print("Current states: " + str(result_map)) 
             time.sleep(5)
             if finish_counter == NUMBER_JOBS:
                 break
 
         mjs.cancel()
         runtime = time.time()-starttime
-        print "Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS)
+        print("Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS))
     except:
         traceback.print_exc(file=sys.stdout)
         try:

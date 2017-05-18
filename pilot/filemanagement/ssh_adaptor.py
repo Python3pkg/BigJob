@@ -1,7 +1,7 @@
 '''
 SSH-based coordination scheme between manager and agent
 '''
-import urlparse
+import urllib.parse
 import pdb
 import glob
 import errno
@@ -26,7 +26,7 @@ class SSHFileAdaptor(object):
     
     def __init__(self, service_url, security_context=None, pilot_data_description=None):        
         self.service_url = service_url
-        result = urlparse.urlparse(service_url)
+        result = urllib.parse.urlparse(service_url)
         self.host = result.hostname
         self.path = result.path        
         self.user = result.username
@@ -39,7 +39,7 @@ class SSHFileAdaptor(object):
          
         # try to recover key from pilot_data_description
         if self.pilot_data_description!=None and\
-           self.pilot_data_description.has_key("userkey"):
+           "userkey" in self.pilot_data_description:
             self.userkey=self.pilot_data_description["userkey"]
 
         logger.debug("Security Context: " + str(self.security_context))
@@ -59,7 +59,7 @@ class SSHFileAdaptor(object):
                     logger.debug("write: " + str(i))
                     f.write(i)
                 f.close()
-                os.chmod(self.userkey, 0600)
+                os.chmod(self.userkey, 0o600)
             except:
                 self.__print_traceback()
         
@@ -72,7 +72,7 @@ class SSHFileAdaptor(object):
     def get_security_context(self):
         """ Returns security context that needs to be available on the distributed
             node in order to access this Pilot Data """
-        if (self.security_context==None or self.security_context=="None") and self.pilot_data_description.has_key("userkey"):
+        if (self.security_context==None or self.security_context=="None") and "userkey" in self.pilot_data_description:
             f = open(self.pilot_data_description["userkey"])
             key = f.readlines()
             f.close
@@ -122,7 +122,7 @@ class SSHFileAdaptor(object):
     def put_du_scp(self, du):
         logger.debug("Copy DU using SCP")
         du_items = du.list()
-        for i in du_items.keys():     
+        for i in list(du_items.keys()):     
             local_filename = du_items[i]["local"]
             remote_path = os.path.join(self.path, str(du.id), os.path.basename(local_filename))
             logger.debug("Put file: %s to %s"%(i, remote_path))                        
@@ -140,7 +140,7 @@ class SSHFileAdaptor(object):
                         continue
                 except:
                     pass         
-            result = urlparse.urlparse(local_filename)
+            result = urllib.parse.urlparse(local_filename)
             source_host = result.netloc
             source_path = result.path
             source_user = result.username
@@ -178,7 +178,7 @@ class SSHFileAdaptor(object):
     
     
     def create_remote_directory(self, target_url):
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         target_host = result.hostname
         target_path = result.path
         target_user = result.username
@@ -192,7 +192,7 @@ class SSHFileAdaptor(object):
                 
         
     def get_path(self, target_url):
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         return result.path
     
         
@@ -220,7 +220,7 @@ class SSHFileAdaptor(object):
             
         
     def __is_remote_directory(self, url):
-        result = urlparse.urlparse(url)
+        result = urllib.parse.urlparse(url)
         host = result.hostname
         path = result.path
         user = result.username        
@@ -235,14 +235,14 @@ class SSHFileAdaptor(object):
             
 
     def __third_party_transfer_scp(self, source_url, target_url):
-        result = urlparse.urlparse(source_url)
+        result = urllib.parse.urlparse(source_url)
         source_host = result.hostname
         source_path = result.path
         source_user = result.username
         if source_host==None or source_host=="":
             source_host="localhost"
 
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         target_host = result.hostname
         target_path = result.path
         target_user = result.username
@@ -358,9 +358,9 @@ class SSHFileAdaptor(object):
    
     def __print_traceback(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        print "*** print_tb:"
+        print("*** print_tb:")
         traceback.print_tb(exc_traceback, limit=1, file=sys.stderr)
-        print "*** print_exception:"
+        print("*** print_exception:")
         traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stderr)
     

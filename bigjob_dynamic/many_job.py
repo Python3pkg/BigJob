@@ -6,6 +6,7 @@ Sub-jobs are distributed across the set of BJs managed by the dynamic BJ.
 import pdb
 import sys
 import os
+from functools import reduce
 sys.path.append(os.path.dirname( __file__ ))
 import getopt
 import time
@@ -13,7 +14,7 @@ import uuid
 import socket
 import traceback
 
-import Queue
+import queue
 import threading
 import logging
 import time
@@ -52,7 +53,7 @@ class many_job_service(object):
         self.subjob_bigjob_dict = {}
 
         # queue contains unscheduled subjobs        
-        self.subjob_queue = Queue.Queue()
+        self.subjob_queue = queue.Queue()
         
         # submit bigjobs to resources
         self.__init_bigjobs()
@@ -139,7 +140,7 @@ class many_job_service(object):
             if i["to_be_terminated"]==True:
                 bj = i["bigjob"]
                 total_cores = int(i["number_of_processes"])
-                if  i["free_cores"]==total_cores and not i.has_key("bj_stopped"):
+                if  i["free_cores"]==total_cores and "bj_stopped" not in i:
                     logging.debug("***Stop BigJob: " + str(bj.pilot_url))
                     # release resources of pilot job
                     bj.stop_pilot_job()
@@ -240,7 +241,7 @@ class many_job_service(object):
         
     def __free_resources(self, subjob):
         """free resources taken by subjob"""
-        if(self.subjob_bigjob_dict.has_key(subjob)):
+        if(subjob in self.subjob_bigjob_dict):
             logging.debug("job: " + str(subjob) + " done - free resources")
             bigjob = self.subjob_bigjob_dict[subjob]
             lock = bigjob["lock"]
@@ -250,7 +251,7 @@ class many_job_service(object):
             bigjob["free_cores"]=free_cores
             del(self.subjob_bigjob_dict[subjob])
             lock.release()
-            print "Freed resource - new state: Big Job: " +  bigjob["bigjob"].pilot_url + " Cores: " + "%s"%free_cores + "/" + str(int(bigjob["number_of_processes"])) 
+            print("Freed resource - new state: Big Job: " +  bigjob["bigjob"].pilot_url + " Cores: " + "%s"%free_cores + "/" + str(int(bigjob["number_of_processes"]))) 
     
     def __reschedule_subjobs_thread(self):
         """ periodically checks subjob_queue for unscheduled subjobs
@@ -284,7 +285,7 @@ class many_job_service(object):
 
     def __get_total_free_cores(self):
         """ get's the total number of free cores from all active  bigjobs """
-        free_cores = map(self.__get_free_cores, self.bigjob_list)
+        free_cores = list(map(self.__get_free_cores, self.bigjob_list))
         #print "Free cores: " + str(free_cores)
         if len(free_cores)>0:
             total_free_cores = reduce(lambda x, y: x + y, free_cores)
@@ -315,7 +316,7 @@ class many_job_service(object):
                     variance += (i - mean)**2
                 variance /= (n-1)
                 variance = math.sqrt(variance)
-            print description + " Average: " + str(mean) + " Stdev: " + str(variance)
+            print(description + " Average: " + str(mean) + " Stdev: " + str(variance))
         except:
             pass
         
@@ -403,7 +404,7 @@ class sub_job(object):
 """ Test Job Submission via ManyJob abstraction """
 if __name__ == "__main__":
     try:
-        print "Test ManyJob"
+        print("Test ManyJob")
         # create job description
         jd = SAGAJobDescription()
         jd.executable = "/bin/date"
@@ -418,15 +419,15 @@ if __name__ == "__main__":
         #                   {"resource_url" : "gram://qb1.loni.org/jobmanager-pbs", "number_nodes" : "64", "allocation" : "<your allocation>", "queue" : "workq", "bigjob_agent": "$(HOME)/src/REMDgManager/bigjob/advert_launcher.sh"})
         resource_list = []
         resource_list.append({"resource_url" : "gram://qb1.loni.org/jobmanager-pbs", "number_nodes" : "16", "allocation" : "<your allocation>", "queue" : "workq", "bigjob_agent": os.getcwd() + "/bigjob_agent_launcher.sh"})
-        print "Create manyjob service " 
+        print("Create manyjob service ") 
         mjs = many_job_service(resource_list, None)
-        print "Create sub-job using manyjob " + str(mjs) 
+        print("Create sub-job using manyjob " + str(mjs)) 
         subjob = mjs.create_job(jd)
-        print "Run sub-job"
+        print("Run sub-job")
         subjob.run()
-        print "Wait for termination"
+        print("Wait for termination")
         subjob.wait()
-        print "Sub-job state: " + str(subjob.get_state())
+        print("Sub-job state: " + str(subjob.get_state()))
         mjs.cancel()
     except:
         try:

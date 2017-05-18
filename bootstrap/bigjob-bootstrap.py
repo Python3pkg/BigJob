@@ -26,7 +26,7 @@ import subprocess
 import tarfile
 
 if sys.version_info < (2, 6):
-    print('ERROR: %s' % sys.exc_info()[1])
+    print(('ERROR: %s' % sys.exc_info()[1]))
     print('ERROR: this script requires Python 2.6 or greater.')
     sys.exit(101)
 
@@ -35,12 +35,12 @@ try:
 except NameError:
     from sets import Set as set
 try:
-    basestring
+    str
 except NameError:
-    basestring = str
+    str = str
 
 try:
-    import ConfigParser
+    import configparser
 except ImportError:
     import configparser as ConfigParser
 
@@ -77,7 +77,7 @@ else:
     try:
         import winreg
     except ImportError:
-        import _winreg as winreg
+        import winreg as winreg
 
     def get_installed_pythons():
         python_core = winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE,
@@ -552,7 +552,7 @@ class ConfigOptionParser(optparse.OptionParser):
     configuration files and environmental variables
     """
     def __init__(self, *args, **kwargs):
-        self.config = ConfigParser.RawConfigParser()
+        self.config = configparser.RawConfigParser()
         self.files = self.get_config_files()
         self.config.read(self.files)
         optparse.OptionParser.__init__(self, *args, **kwargs)
@@ -576,7 +576,7 @@ class ConfigOptionParser(optparse.OptionParser):
         # 2. environmental variables
         config.update(dict(self.get_environ_vars()))
         # Then set the options with those values
-        for key, val in config.items():
+        for key, val in list(config.items()):
             key = key.replace('_', '-')
             if not key.startswith('--'):
                 key = '--%s' % key  # only prefer long opts
@@ -598,7 +598,7 @@ class ConfigOptionParser(optparse.OptionParser):
                     val = option.convert_value(key, val)
                 except optparse.OptionValueError:
                     e = sys.exc_info()[1]
-                    print("An error occured during configuration: %s" % e)
+                    print(("An error occured during configuration: %s" % e))
                     sys.exit(3)
                 defaults[option.dest] = val
         return defaults
@@ -615,7 +615,7 @@ class ConfigOptionParser(optparse.OptionParser):
         """
         Returns a generator with all environmental vars with prefix VIRTUALENV
         """
-        for key, val in os.environ.items():
+        for key, val in list(os.environ.items()):
             if key.startswith(prefix):
                 yield (key.replace(prefix, '').lower(), val)
 
@@ -631,7 +631,7 @@ class ConfigOptionParser(optparse.OptionParser):
         defaults = self.update_defaults(self.defaults.copy())  # ours
         for option in self._get_all_options():
             default = defaults.get(option.dest)
-            if isinstance(default, basestring):
+            if isinstance(default, str):
                 opt_str = option.get_opt_string()
                 defaults[option.dest] = option.check_value(opt_str, default)
         return optparse.Values(defaults)
@@ -787,8 +787,8 @@ def main():
         parser.print_help()
         sys.exit(2)
     if len(args) > 1:
-        print('There must be only one argument: DEST_DIR (you gave %s)' % (
-            ' '.join(args)))
+        print(('There must be only one argument: DEST_DIR (you gave %s)' % (
+            ' '.join(args))))
         parser.print_help()
         sys.exit(2)
 
@@ -985,12 +985,12 @@ def path_locations(home_dir):
             size = max(len(home_dir)+1, 256)
             buf = ctypes.create_unicode_buffer(size)
             try:
-                u = unicode
+                u = str
             except NameError:
                 u = str
             ret = GetShortPathName(u(home_dir), buf, size)
             if not ret:
-                print('Error: the path "%s" has a space in it' % home_dir)
+                print(('Error: the path "%s" has a space in it' % home_dir))
                 print('We could not determine the short pathname for it.')
                 print('Exiting.')
                 sys.exit(3)
@@ -1471,7 +1471,7 @@ def install_activate(home_dir, bin_dir, prompt=None):
     if hasattr(home_dir, 'decode'):
         home_dir = home_dir.decode(sys.getfilesystemencoding())
     vname = os.path.basename(home_dir)
-    for name, content in files.items():
+    for name, content in list(files.items()):
         content = content.replace('__VIRTUAL_PROMPT__', prompt or '')
         content = content.replace('__VIRTUAL_WINPROMPT__', prompt or '(%s)' % vname)
         content = content.replace('__VIRTUAL_ENV__', home_dir)
@@ -1517,8 +1517,8 @@ def fix_lib64(lib_dir, symlink=True):
     instead of lib/pythonX.Y.  If this is such a platform we'll just create a
     symlink so lib64 points to lib
     """
-    if [p for p in distutils.sysconfig.get_config_vars().values()
-        if isinstance(p, basestring) and 'lib64' in p]:
+    if [p for p in list(distutils.sysconfig.get_config_vars().values())
+        if isinstance(p, str) and 'lib64' in p]:
         # PyPy's library path scheme is not affected by this.
         # Return early or we will die on the following assert.
         if is_pypy:
@@ -1813,14 +1813,14 @@ def create_bootstrap_script(extra_text, python_version=''):
 import os, subprocess
 def after_install(options, home_dir):
     etc = join(home_dir, 'etc')
-    print join(home_dir, 'bin', 'easy_install')
+    print(join(home_dir, 'bin', 'easy_install'))
     if not os.path.exists(etc):
         os.makedirs(etc)         
-    print "load distribute"
+    print("load distribute")
     subprocess.call(["curl", "-O", "https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py"])    
-    print "install setuptools"
+    print("install setuptools")
     subprocess.call([join(home_dir, 'bin', 'python'), 'ez_setup.py'])
-    print "install bigjob"
+    print("install bigjob")
     subprocess.call([join(home_dir, 'bin', 'easy_install'), 'bigjob'])    
 
 
@@ -2325,9 +2325,9 @@ def install_with_virtualenv():
                       usage="%prog [OPTIONS] DEST_DIR",
                       formatter=UpdatingDefaultsHelpFormatter())
     options, args = parser.parse_args()
-    print "Install with existing Virtualenv. Dest dir: " + str(args[0])
+    print("Install with existing Virtualenv. Dest dir: " + str(args[0]))
     subprocess.call(["virtualenv", args[0]])
-    print "install bigjob"
+    print("install bigjob")
     subprocess.call([os.path.join(args[0], 'bin', 'easy_install'), 'bigjob'])
 
 

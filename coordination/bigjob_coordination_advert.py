@@ -10,7 +10,7 @@ import pickle
 import pdb
 import saga
 import json
-import urlparse
+import urllib.parse
 import logging
 
 from bigjob import logger

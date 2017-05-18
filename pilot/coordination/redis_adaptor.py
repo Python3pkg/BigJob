@@ -129,10 +129,10 @@ class RedisCoordinationAdaptor:
         #cls.__store_entry(cls.__remove_dbtype(cds_url)+"/cds/", pjs_urls)
         
         # currently managed PDs and WUs
-        pd_urls = [i.url for i in cds.data_units.values()]
+        pd_urls = [i.url for i in list(cds.data_units.values())]
         #cls.__store_entry(cls.__remove_dbtype(cds_url)+"/du/", pd_urls)
         
-        wu_urls = [i.url for i in cds.compute_units.values()]
+        wu_urls = [i.url for i in list(cds.compute_units.values())]
         #cls.__store_entry(cls.__remove_dbtype(cds_url)+"/cu/", wu_urls)
             
         

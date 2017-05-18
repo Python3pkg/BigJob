@@ -51,7 +51,7 @@ def has_finished(state):
 
 def main():
     try:
-        print "ManyJob load test with " + str(NUMBER_JOBS) + " jobs."
+        print("ManyJob load test with " + str(NUMBER_JOBS) + " jobs.")
         starttime=time.time()
 
         """ submit via mj abstraction
@@ -73,7 +73,7 @@ def main():
         remove_additional_resources=False
         
 
-        print "Create Dynamic BigJob Service "
+        print("Create Dynamic BigJob Service ")
         mjs = many_job_service(resource_list, COORDINATION_URL)
         
         jobs = []
@@ -92,25 +92,25 @@ def main():
             jd.error = "stderr-" + str(i) + ".txt"
             subjob = mjs.create_job(jd)
             subjob.run()
-            print "Submited sub-job " + "%d"%i + "."
+            print("Submited sub-job " + "%d"%i + ".")
             jobs.append(subjob)
             job_start_times[subjob]=time.time()
             job_states[subjob] = subjob.get_state()
-        print "************************ All Jobs submitted ************************"
+        print("************************ All Jobs submitted ************************")
         while 1: 
             finish_counter=0
             result_map = {}
             for i in range(0, NUMBER_JOBS):
                 old_state = job_states[jobs[i]]
                 state = jobs[i].get_state()
-                if result_map.has_key(state) == False:
+                if (state in result_map) == False:
                     result_map[state]=0
                 result_map[state] = result_map[state]+1
                 #print "counter: " + str(i) + " job: " + str(jobs[i]) + " state: " + state
                 if old_state != state:
-                    print "Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state
+                    print("Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state)
                 if old_state != state and has_finished(state)==True:
-                    print "Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s."
+                    print("Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s.")
                 if has_finished(state)==True:
                     finish_counter = finish_counter + 1
                 job_states[jobs[i]]=state
@@ -118,7 +118,7 @@ def main():
             # Dynamic BigJob add resources at runtime
             # if more than 30 s - add additional resource
             if time.time()-starttime > 10 and add_additional_resources==True:
-                print "***add additional resources***"
+                print("***add additional resources***")
                 mjs.add_resource(resource_dictionary)
                 add_additional_resources=False  
                 
@@ -126,18 +126,18 @@ def main():
             if (time.time()-starttime > 15 and remove_additional_resources==True):
                 bj_list = mjs.get_resources()
                 if len(bj_list)>0:
-                    print "***remove resources: " + str(bj_list[0])
+                    print("***remove resources: " + str(bj_list[0]))
                     mjs.remove_resource(bj_list[0])
                 remove_additional_resources=False
                 
-            print "Current states: " + str(result_map) 
+            print("Current states: " + str(result_map)) 
             time.sleep(5)
             if finish_counter == NUMBER_JOBS:
                 break
 
         mjs.cancel()
         runtime = time.time()-starttime
-        print "Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS)
+        print("Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS))
     except:
         traceback.print_exc(file=sys.stdout)
         try:

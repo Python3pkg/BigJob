@@ -25,10 +25,10 @@ class Scheduler:
     def schedule_pilot_data(self, data_unit_description=None):
         logger.debug("Schedule to PD - # Avail pilots: %d"%len(self.pilot_data))     
         candidate_pilot_data = []  
-        if data_unit_description.has_key("affinity_datacenter_label") and data_unit_description.has_key("affinity_machine_label"):
+        if "affinity_datacenter_label" in data_unit_description and "affinity_machine_label" in data_unit_description:
             for i in self.pilot_data: 
                 pilot_data_description = i.pilot_data_description
-                if pilot_data_description.has_key("affinity_machine_label") and pilot_data_description.has_key("affinity_datacenter_label"):
+                if "affinity_machine_label" in pilot_data_description and "affinity_datacenter_label" in pilot_data_description:
                     if data_unit_description["affinity_datacenter_label"] == pilot_data_description["affinity_datacenter_label"]\
                     and data_unit_description["affinity_machine_label"] == pilot_data_description["affinity_machine_label"]:
                         candidate_pilot_data.append(i)
@@ -53,16 +53,16 @@ class Scheduler:
         logger.debug("Schedule to PJ - # Avail PJs: %d"%len(self.pilot_jobs))
         candidate_pilot_jobs = []
         required_number_of_processes=1 
-        if compute_unit_description.has_key("number_of_processes"):
+        if "number_of_processes" in compute_unit_description:
             required_number_of_processes = int(compute_unit_description["number_of_processes"])
         
-        if compute_unit_description.has_key("affinity_datacenter_label") and compute_unit_description.has_key("affinity_machine_label"):
+        if "affinity_datacenter_label" in compute_unit_description and "affinity_machine_label" in compute_unit_description:
             for i in self.pilot_jobs:
                 free_nodes = i.get_free_nodes()
                 logger.debug("BJ: %r State: %s Free nodes: %d"%(i, i.get_state(), free_nodes))
                 if i.get_state()=="Running" and free_nodes >= required_number_of_processes: # check whether pilot is active
                     pilot_job_description = i.pilot_compute_description
-                    if pilot_job_description.has_key("affinity_datacenter_label") and pilot_job_description.has_key("affinity_machine_label"):
+                    if "affinity_datacenter_label" in pilot_job_description and "affinity_machine_label" in pilot_job_description:
                         if pilot_job_description["affinity_datacenter_label"] == compute_unit_description["affinity_datacenter_label"] and pilot_job_description["affinity_machine_label"] == compute_unit_description["affinity_machine_label"]:
                             candidate_pilot_jobs.append(i)
                         

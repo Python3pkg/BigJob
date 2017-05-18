@@ -51,14 +51,14 @@ if __name__ == "__main__":
     if len(sys.argv)==2:
         reconnect_url=sys.argv[1]
     else:
-        print "Usage: " + sys.executable + " " + __file__ + " <BigJob URL to Reconnect to>"
+        print("Usage: " + sys.executable + " " + __file__ + " <BigJob URL to Reconnect to>")
         sys.exit(-1)
 
-    print "Reconnect to Pilot Job/BigJob at: " + reconnect_url
+    print("Reconnect to Pilot Job/BigJob at: " + reconnect_url)
     bj = bigjob(pilot_url=reconnect_url)
     
-    print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state() 
-           + " Number of SJs: " + str(len(bj.list_subjobs())) )
+    print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state() 
+           + " Number of SJs: " + str(len(bj.list_subjobs())) ))
 
     ##########################################################################################
     # Submit some more subjobs
@@ -81,13 +81,13 @@ if __name__ == "__main__":
             job_start_times[sj]=time.time()
             job_states[sj] = sj.get_state()
     
-        print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state() 
-               + " Number of SJs: " + str(len(bj.list_subjobs())) )
-        print "Wait for completion..."
+        print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state() 
+               + " Number of SJs: " + str(len(bj.list_subjobs())) ))
+        print("Wait for completion...")
         bj.wait()
     
         runtime = time.time()-starttime
-        print "Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS)
+        print("Runtime: " + str(runtime) + " s; Runtime per Job: " + str(runtime/NUMBER_JOBS))
         
         bj.cancel()
     

@@ -50,7 +50,7 @@ if __name__ == "__main__":
     
     runtime=time.time()-start
     print("Number Slots, Number CUs, Runtime, Throughput")
-    print("%d,%d,%f,%f"%(NUMBER_SLOTS,NUMBER_CUS,runtime, runtime/NUMBER_CUS))
+    print(("%d,%d,%f,%f"%(NUMBER_SLOTS,NUMBER_CUS,runtime, runtime/NUMBER_CUS)))
     
     print("Terminate Pilot Compute and Compute Data Service")
     pilot_compute_service.cancel()

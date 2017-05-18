@@ -124,26 +124,26 @@ class PilotComputeService(PilotComputeService):
     # Internal methods
     def __translate_pj_bj_description(self, pilot_compute_description):
         resource_description={}
-        if pilot_compute_description.has_key("service_url"):
+        if "service_url" in pilot_compute_description:
             resource_description["resource_url"] = pilot_compute_description["service_url"] 
             
-        if pilot_compute_description.has_key("queue"):
+        if "queue" in pilot_compute_description:
             resource_description["queue"] = pilot_compute_description["queue"] 
         else:
             resource_description["queue"] = None
 
-        if pilot_compute_description.has_key("spmd_variation"):
+        if "spmd_variation" in pilot_compute_description:
             resource_description["spmd_variation"] = pilot_compute_description["spmd_variation"] 
         else:
             resource_description["spmd_variation"] = None
             
             
-        if pilot_compute_description.has_key("project"):
+        if "project" in pilot_compute_description:
             resource_description["project"] = pilot_compute_description["project"] 
         else:
             resource_description["project"] = None
         
-        for i in pilot_compute_description.keys():
+        for i in list(pilot_compute_description.keys()):
             resource_description[i] = pilot_compute_description[i] 
         
         resource_description["pilot_compute_description"] = pilot_compute_description
@@ -451,45 +451,45 @@ class ComputeUnit(ComputeUnit):
     # INTERNAL
     def __translate_cu_sj_description(self, compute_unit_description):
         jd = description()
-        if compute_unit_description.has_key("executable"): 
+        if "executable" in compute_unit_description: 
             jd.executable = compute_unit_description["executable"]
-        if compute_unit_description.has_key("spmd_variation"):
+        if "spmd_variation" in compute_unit_description:
             jd.spmd_variation = compute_unit_description["spmd_variation"]
         else:
             jd.spmd_variation = "single"
-        if compute_unit_description.has_key("arguments"): 
+        if "arguments" in compute_unit_description: 
             jd.arguments = compute_unit_description["arguments"]
 
-        if compute_unit_description.has_key("environment"):
+        if "environment" in compute_unit_description:
 
             env = compute_unit_description["environment"]
             if type(env) == dict:
                 # convet to 'old-style' argument list
                 env_list = list()
-                for (key, val) in env.iteritems():
+                for (key, val) in env.items():
                     env_list.append("%s=%s" % (key, val))
                 jd.environment = env_list
             else:
                 jd.environment = env
         
         # handling number of processes
-        if compute_unit_description.has_key("number_of_processes"):
+        if "number_of_processes" in compute_unit_description:
             jd.number_of_processes=int(compute_unit_description["number_of_processes"])
-        elif compute_unit_description.has_key("total_cpu_count"):
+        elif "total_cpu_count" in compute_unit_description:
             jd.number_of_processes=int(compute_unit_description["total_cpu_count"])
         else:
             jd.number_of_processes=1
             
-        if compute_unit_description.has_key("working_directory"): 
+        if "working_directory" in compute_unit_description: 
             jd.working_directory = compute_unit_description["working_directory"]
-        if compute_unit_description.has_key("output"): 
+        if "output" in compute_unit_description: 
             jd.output =  compute_unit_description["output"]
-        if compute_unit_description.has_key("error"): 
+        if "error" in compute_unit_description: 
             jd.error = compute_unit_description["error"]
-        if compute_unit_description.has_key("file_transfer"):
+        if "file_transfer" in compute_unit_description:
             jd.file_transfer=compute_unit_description["file_transfer"]  
-        if compute_unit_description.has_key("input_data"):
+        if "input_data" in compute_unit_description:
             jd.input_data=compute_unit_description["input_data"]  
-        if compute_unit_description.has_key("output_data"):
+        if "output_data" in compute_unit_description:
             jd.output_data=compute_unit_description["output_data"]            
         return jd

@@ -14,7 +14,7 @@ import os
 import traceback
 import logging
 import textwrap
-import urlparse
+import urllib.parse
 import types
 import subprocess
 import pdb
@@ -35,12 +35,12 @@ from bigjob import logger
 
 # Optional Job Plugins
 try:
-    from job_plugin.gcessh import Service as GCEService
+    from .job_plugin.gcessh import Service as GCEService
 except:
     pass 
 
 try:
-    from job_plugin.ec2ssh import Service as EC2Service
+    from .job_plugin.ec2ssh import Service as EC2Service
 except:
     pass  
 
@@ -329,7 +329,7 @@ class bigjob(api.base.bigjob):
            
             jd.executable = "/usr/bin/env"
             jd.arguments = ["python",  os.path.basename(condor_bootstrap_filename)]                
-            if pilot_compute_description.has_key("candidate_hosts"):
+            if "candidate_hosts" in pilot_compute_description:
                 jd.candidate_hosts = pilot_compute_description["candidate_hosts"]
             bj_file_transfers = []
             file_transfer_spec = condor_bootstrap_filename + " > " + os.path.basename(condor_bootstrap_filename)
@@ -348,7 +348,7 @@ class bigjob(api.base.bigjob):
         else:
             jd.total_cpu_count=int(number_nodes)                   
             jd.spmd_variation = "single"
-            if pilot_compute_description!=None and pilot_compute_description.has_key("spmd_variation"):
+            if pilot_compute_description!=None and "spmd_variation" in pilot_compute_description:
                 jd.spmd_variation=pilot_compute_description["spmd_variation"]
             jd.arguments = ["python", "-c", bootstrap_script]
             jd.executable = "/usr/bin/env"           
@@ -427,7 +427,7 @@ class bigjob(api.base.bigjob):
         number_used_nodes=0
         for i in jobs:
             job_detail = self.coordination.get_job(i)            
-            if job_detail != None and job_detail.has_key("state") == True\
+            if job_detail != None and ("state" in job_detail) == True\
                 and job_detail["state"]==str(Running):
                 job_np = "1"
                 if (job_detail["NumberOfProcesses"] == True):
@@ -499,7 +499,7 @@ class bigjob(api.base.bigjob):
                 state = str(self.coordination.get_job_state(sj_id))
                 #logger.debug("SJ: %s : State: %s"%(sj_id, str(state)))   
                 #state = job_detail["state"]                
-                if result_map.has_key(state)==False:
+                if (state in result_map)==False:
                     result_map[state]=1
                 else:
                     result_map[state] = result_map[state]+1
@@ -559,7 +559,7 @@ class bigjob(api.base.bigjob):
                 logger.debug("job dict: " + str(job_dict))
                 
                 
-                if job_dict.has_key("FileTransfer"):
+                if "FileTransfer" in job_dict:
                     files = job_dict["FileTransfer"]
                     sj_work_dir = self.__get_subjob_working_dir(job_id)
                     self.__stage_files(files, sj_work_dir)
@@ -765,7 +765,7 @@ except:
             """ Fallback URL parser based on Python urlparse library """
             logger.error("URL %s could not be parsed"%(url))
             traceback.print_exc(file=sys.stderr)
-            result = urlparse.urlparse(url)
+            result = urllib.parse.urlparse(url)
             logger.debug("Result: " + str(result))
             host = result.hostname
             #host = None
@@ -1178,7 +1178,7 @@ class description(SAGAJobDescription):
     # --------------------------------------------------------------------------
     #
     def _get_input_data (self) :
-        print "get caled. returning: %s" % self.input_data
+        print("get caled. returning: %s" % self.input_data)
         return self.input_data
 
     # --------------------------------------------------------------------------

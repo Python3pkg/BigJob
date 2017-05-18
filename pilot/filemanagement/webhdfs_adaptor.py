@@ -1,6 +1,6 @@
 import sys, os
 import stat
-import urlparse
+import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/../../../webhdfs-py/")
 
@@ -22,7 +22,7 @@ class WebHDFSFileAdaptor(object):
         self.service_url = service_url
         
         try:
-            result = urlparse.urlparse(service_url)
+            result = urllib.parse.urlparse(service_url)
             self.host = result.netloc
             self.path = result.path        
         except:
@@ -80,7 +80,7 @@ class WebHDFSFileAdaptor(object):
             logger.error("Only local URLs supported")
             return
         
-        result = urlparse.urlparse(remote_url)
+        result = urllib.parse.urlparse(remote_url)
         path = result.path    
         # create directory
         try:

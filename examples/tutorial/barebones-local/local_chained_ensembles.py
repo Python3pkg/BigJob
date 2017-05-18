@@ -51,7 +51,7 @@ def main():
 
 	    # Submit task to PilotJob
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_A.append(task)
 
         # Chaining tasks i.e submit a compute unit, when compute unit from A is successfully executed.
@@ -61,7 +61,7 @@ def main():
         while len(task_set_A) > 0:
             for a_task in task_set_A:
                 if a_task.get_state() == "Done":
-                    print "One 'A' task %s finished. Launching a 'B' task." % (a_task.get_id())
+                    print("One 'A' task %s finished. Launching a 'B' task." % (a_task.get_id()))
                     task_desc = pilot.ComputeUnitDescription()
                     task_desc.executable = '/bin/echo'
                     task_desc.arguments = ['I am an $TASK_SET task with id $TASK_NO', ]
@@ -72,12 +72,12 @@ def main():
 
 		    # Submit task to Pilot Job
                     task = pilotjob.submit_compute_unit(task_desc)
-                    print "* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id())
+                    print("* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id()))
                     task_set_B.append(task)
                     task_set_A.remove(a_task)
 
-    except Exception, ex:
-        print "AN ERROR OCCURRED: %s" % ((str(ex)))
+    except Exception as ex:
+        print("AN ERROR OCCURRED: %s" % ((str(ex))))
         # print a stack trace in case of an exception -
         # this can be helpful for debugging the problem
         traceback.print_exc()

@@ -13,7 +13,7 @@ COORDINATION_URL = "redis://localhost:6379"
 
 if __name__ == "__main__":      
     
-    print COORDINATION_URL
+    print(COORDINATION_URL)
     # create pilot data service (factory for data pilots (physical, distributed storage))
     # and pilot data
     pilot_data_service = PilotDataService(coordination_url=COORDINATION_URL)

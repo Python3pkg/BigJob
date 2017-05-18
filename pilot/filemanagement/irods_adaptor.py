@@ -1,7 +1,7 @@
 '''
 iRods based File Transfer Implementation
 '''
-import urlparse
+import urllib.parse
 import datetime
 import errno
 import sys
@@ -51,7 +51,7 @@ class iRodsFileAdaptor(object):
             env_var = match.group(1)
             logger.debug("Found: " + env_var + " in URL.")
             logger.debug("Env list: " + str(os.environ))
-            if os.environ.has_key(env_var):
+            if env_var in os.environ:
                 self.localpath = re.sub(r'\$\{.*\}', os.environ[env_var], self.localpath)
                 #self.localpath = os.environ[env_var]
                 logger.debug("Expanding URL Path to: " + self.localpath)
@@ -96,7 +96,7 @@ class iRodsFileAdaptor(object):
         start = time.time()
         logger.debug("Copy DU to iRod")
         du_items = du.list()
-        for i in du_items.keys():     
+        for i in list(du_items.keys()):     
             try:
                 local_filename=du_items[i]["local"]
                 remote_path = os.path.join(str(du.id), os.path.basename(local_filename))
@@ -126,13 +126,13 @@ class iRodsFileAdaptor(object):
                     for i in files:
                         try:
                             os.symlink(os.path.join(files, i), target_path)
-                            os.chmod(os.path.join(target_path, os.path.basename(path)), 0777)
+                            os.chmod(os.path.join(target_path, os.path.basename(path)), 0o777)
                         except:
                             self.__print_traceback()
                 else:
                     try:
                         os.symlink(path, os.path.join(target_path, os.path.basename(path)))
-                        os.chmod(os.path.join(target_path, os.path.basename(path)), 0777)
+                        os.chmod(os.path.join(target_path, os.path.basename(path)), 0o777)
                     except:
                         self.__print_traceback()
 
@@ -149,7 +149,7 @@ class iRodsFileAdaptor(object):
             for i in os.listdir(full_path):
                 try:
                     logger.debug("chmod " + str(i))
-                    os.chmod(os.path.join(full_path, i), 0777)
+                    os.chmod(os.path.join(full_path, i), 0o777)
                     logger.debug("move " + str(i))
                     shutil.move(os.path.join(full_path, i), target_url)
                 except:
@@ -223,9 +223,9 @@ class iRodsFileAdaptor(object):
 
     def __print_traceback(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        print "*** print_tb:"
+        print("*** print_tb:")
         traceback.print_tb(exc_traceback, limit=1, file=sys.stderr)
-        print "*** print_exception:"
+        print("*** print_exception:")
         traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stderr)
     

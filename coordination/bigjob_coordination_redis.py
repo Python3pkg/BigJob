@@ -79,7 +79,7 @@ class bigjob_coordination(object):
         self.pipe = self.redis_client.pipeline()
         try:
             self.redis_client.ping()
-        except Exception, ex:
+        except Exception as ex:
             logger.error("Cannot connect to Redis server: %s" % str(ex))
             raise Exception("Cannot connect to Redis server: %s" % str(ex))
         

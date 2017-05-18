@@ -46,7 +46,7 @@ def main():
 
     ]
     rst = make_table(array)
-    print rst
+    print(rst)
     return(0)
 
 def make_table(grid):
@@ -56,12 +56,12 @@ def make_table(grid):
 
     width_cols = []
     for i in range(0, num_cols) :
-        print i
+        print(i)
         width_cols.append (0)
         for j in range(0, num_rows) :
             elem     = grid[j][i]
             elem_len = 0
-            print "%d - %d: %s" % (i, j, elem)
+            print("%d - %d: %s" % (i, j, elem))
             if  type(elem) is list :
                 for entry in elem :
                     elem_len = max (elem_len, len(entry))
@@ -93,7 +93,7 @@ def make_table(grid):
                     if  k == 0 :
                         val = elem
                 fmt = "%%-%ds" % width_cols[j]
-                print fmt
+                print(fmt)
                 rst += '| ' + fmt % str(val) + ' '
 
             rst += '|\n'

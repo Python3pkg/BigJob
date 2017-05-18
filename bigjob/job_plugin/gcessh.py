@@ -77,15 +77,15 @@ class Job(object):
         self.saga_url = saga_url
         self.pilot_compute_description = pilot_compute_description
         self.image_url = GCE_IMAGE_URL
-        if self.pilot_compute_description.has_key("vm_id"):
+        if "vm_id" in self.pilot_compute_description:
             self.image_url = self.pilot_compute_description["vm_id"]
             
         self.machine_type = "https://www.googleapis.com/compute/v1beta12/projects/bigjob-pilot/machine-types/n1-standard-1"
-        if self.pilot_compute_description.has_key("vm_type"):
+        if "vm_type" in self.pilot_compute_description:
             self.machine_type = self.pilot_compute_description["vm_type"]
         
         self.location = "https://www.googleapis.com/compute/v1beta12/projects/bigjob-pilot/zones/us-east1-a"
-        if self.pilot_compute_description.has_key("vm_location"):
+        if "vm_location" in self.pilot_compute_description:
             self.location = self.pilot_compute_description["vm_location"]
        
             
@@ -180,7 +180,7 @@ class Job(object):
         js = saga.job.Service(url, session=session)
 
         job = js.create_job(self.job_description)
-        print "Submit pilot job to: " + str(url)
+        print("Submit pilot job to: " + str(url))
         
         TRIAL_MAX=15
         trials=0
@@ -199,7 +199,7 @@ class Job(object):
         
       
         
-        print "Job State : %s" % (job.get_state())
+        print("Job State : %s" % (job.get_state()))
        
 
     def wait_for_running(self):
@@ -234,4 +234,4 @@ if __name__ == "__main__":
     j = gce_service.create_job(job_description)
     
     gce.run()
-    print gce.get_state()
+    print(gce.get_state())

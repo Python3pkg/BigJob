@@ -1,7 +1,7 @@
 '''
 Globus Online based File Transfer
 '''
-import urlparse
+import urllib.parse
 import pdb
 import glob
 import errno
@@ -30,7 +30,7 @@ class GlobusOnlineFileAdaptor(object):
     
     def __init__(self, service_url):        
         self.service_url = service_url
-        result = urlparse.urlparse(service_url)
+        result = urllib.parse.urlparse(service_url)
         self.host = result.netloc
         self.query = result.path      
         self.ep = self.__get_ep(self.query)
@@ -94,7 +94,7 @@ class GlobusOnlineFileAdaptor(object):
     def put_du(self, du):
         logging.debug("Copy DU using Globus Online")
         du_items = du.list()
-        for i in du_items.keys():  
+        for i in list(du_items.keys()):  
             local_filename=du_items[i]["local"]
             remote_path = os.path.join(self.path, str(du.id), os.path.basename(local_filename))
             logging.debug("Put file: %s to %s"%(local_filename, remote_path))                        
@@ -103,7 +103,7 @@ class GlobusOnlineFileAdaptor(object):
                 if self.__is_remote_directory(local_filename):
                     logging.warning("Path %s is a directory. Ignored."%local_filename)                
                     continue
-                result = urlparse.urlparse(local_filename)
+                result = urllib.parse.urlparse(local_filename)
                 source_host = result.netloc
                 source_path = result.path
                 logger.debug(str((source_host, source_path, self.host, remote_path)))
@@ -176,7 +176,7 @@ class GlobusOnlineFileAdaptor(object):
     
     def create_remote_directory(self, target_url):
         if not self.__is_remote_directory(target_url):
-            result = urlparse.urlparse(target_url)
+            result = urllib.parse.urlparse(target_url)
             target_query = result.path
             target_ep = self.__get_ep(target_query)
             target_path = self.__get_path(target_query)
@@ -190,7 +190,7 @@ class GlobusOnlineFileAdaptor(object):
     
     
     def get_path(self, target_url):
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         target_query = result.path
         target_path = self.__get_path(target_query)
         return target_path
@@ -217,7 +217,7 @@ class GlobusOnlineFileAdaptor(object):
         
     def __is_remote_directory(self, url):
         try:
-            result = urlparse.urlparse(url)
+            result = urllib.parse.urlparse(url)
             target_query = result.path
             target_ep = self.__get_ep(target_query)
             target_path = self.__get_path(target_query)
@@ -234,12 +234,12 @@ class GlobusOnlineFileAdaptor(object):
             Transfers from source URL to machine to target_url
         """
         transfer_start = time.time()
-        result = urlparse.urlparse(source_url)
+        result = urllib.parse.urlparse(source_url)
         source_query = result.path
         source_ep = self.__get_ep(source_query)
         source_path = self.__get_path(source_query)
         
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         target_query = result.path
         target_ep = self.__get_ep(target_query)
         target_path = self.__get_path(target_query)
@@ -307,10 +307,10 @@ class GlobusOnlineFileAdaptor(object):
                 timeout -= 1
 
         if status != "ACTIVE":
-            print "Task %s complete!" % task_id
+            print("Task %s complete!" % task_id)
             return True
         else:
-            print "Task still not complete after %d seconds" % timeout
+            print("Task still not complete after %d seconds" % timeout)
             return False
     
     
@@ -319,7 +319,7 @@ class GlobusOnlineFileAdaptor(object):
         """
         try:
             self.__sftp.stat(path)
-        except IOError, e:
+        except IOError as e:
             if e.errno == errno.ENOENT:
                 return False
             raise
@@ -329,9 +329,9 @@ class GlobusOnlineFileAdaptor(object):
    
     def __print_traceback(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        print "*** print_tb:"
+        print("*** print_tb:")
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
-        print "*** print_exception:"
+        print("*** print_exception:")
         traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stdout)
     

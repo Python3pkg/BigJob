@@ -1,7 +1,7 @@
 '''
 Amazon S3 based File Transfer Implementation
 '''
-import urlparse
+import urllib.parse
 
 import errno
 import sys
@@ -69,8 +69,8 @@ class S3FileAdaptor(object):
         
         # try to recover key from pilot_data_description
         if self.pilot_data_description!=None and\
-           self.pilot_data_description.has_key("access_key_id") and \
-           self.pilot_data_description.has_key("secret_access_key"):
+           "access_key_id" in self.pilot_data_description and \
+           "secret_access_key" in self.pilot_data_description:
             aws_access_key_id=self.pilot_data_description["access_key_id"]
             aws_secret_access_key=self.pilot_data_description["secret_access_key"]
         
@@ -107,7 +107,7 @@ class S3FileAdaptor(object):
             self.s3_region = None
             # Region specifier according to Amazon API:
             # http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETlocation.html
-            if self.pilot_data_description.has_key("region"):
+            if "region" in self.pilot_data_description:
                 self.s3_region =  self.pilot_data_description["region"]
            
             self.s3_conn = S3Connection(
@@ -163,7 +163,7 @@ class S3FileAdaptor(object):
     def put_du(self, du):
         logger.debug("Copy DU to S3/Walrus")
         du_items = du.list()
-        for i in du_items.keys():     
+        for i in list(du_items.keys()):     
             try:
                 local_filename=du_items[i]["local"]
                 remote_path = os.path.join(str(du.id), os.path.basename(local_filename))
@@ -276,9 +276,9 @@ class S3FileAdaptor(object):
    
     def __print_traceback(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        print "*** print_tb:"
+        print("*** print_tb:")
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
-        print "*** print_exception:"
+        print("*** print_exception:")
         traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stdout)
     

@@ -1,7 +1,7 @@
 '''
 Google Storage based File Transfer Implementation
 '''
-import urlparse
+import urllib.parse
 
 import errno
 import sys
@@ -22,7 +22,7 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import Credentials
 from oauth2client.tools import run
 import httplib2
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 """
 AN OAUTH2 Client Id must be created at the Google API console at:
@@ -118,7 +118,7 @@ class GSFileAdaptor(object):
     def put_du(self, du):
         logger.debug("Copy DU to Google Storage")
         du_items = du.list()
-        for i in du_items.keys():   
+        for i in list(du_items.keys()):   
             try:
                 local_filename=du_items[i]["local"]
                 remote_path = os.path.join(str(du.id), os.path.basename(local_filename))
@@ -183,7 +183,7 @@ class GSFileAdaptor(object):
     
     
     def get_path(self, target_url):
-        result = urlparse.urlparse(target_url)
+        result = urllib.parse.urlparse(target_url)
         target_path = result.path
         return target_path
         
@@ -205,9 +205,9 @@ class GSFileAdaptor(object):
    
     def __print_traceback(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        print "*** print_tb:"
+        print("*** print_tb:")
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
-        print "*** print_exception:"
+        print("*** print_exception:")
         traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stdout)
     

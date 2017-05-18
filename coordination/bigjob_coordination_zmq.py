@@ -11,11 +11,11 @@ import pickle
 import pdb
 import zmq
 import traceback
-import Queue
+import queue
 import socket
 import time
 from zmq.eventloop import ioloop, zmqstream
-import zlib, cPickle as pickle
+import zlib, pickle as pickle
 from bigjob import logger
 
 if sys.version_info < (2, 5):
@@ -60,13 +60,13 @@ class bigjob_coordination(object):
         self.job_ids = []
         self.jobs = {}
         self.job_states = {}
-        self.new_job_queue = Queue.Queue()
+        self.new_job_queue = queue.Queue()
         
         # Lock for server and client to manage concurrent access
         self.resource_lock = threading.Lock()
         
         # Client side queue
-        self.subjob_queue = Queue.Queue()
+        self.subjob_queue = queue.Queue()
             
         # set up ZMQ client / server communication
         self.context = zmq.Context()
@@ -247,7 +247,7 @@ class bigjob_coordination(object):
         self.job_states[job_url]="Unknown"     
     
     def get_job(self, job_url):       
-        if self.jobs.has_key(job_url)==False:
+        if (job_url in self.jobs)==False:
             logging.debug("get_job: " + str(self.resource_lock))
             with self.resource_lock: 
                 logging.debug("get_job (lock acquired): " + str(self.resource_lock))

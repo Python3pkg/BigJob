@@ -68,7 +68,7 @@ def main():
     input_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test.txt")
     bj_filetransfers = [input_file +" > test.txt"]
   
-    print "Start Pilot Job/BigJob at: " + lrms_url
+    print("Start Pilot Job/BigJob at: " + lrms_url)
     bj = bigjob(COORDINATION_URL)
     bj.start_pilot_job( lrms_url,
                         None,
@@ -81,7 +81,7 @@ def main():
                         processes_per_node,
                         bj_filetransfers)
     
-    print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state())
+    print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state()))
 
     ##########################################################################################
     # Submit SubJob through BigJob
@@ -103,7 +103,7 @@ def main():
     while 1:
         state = str(sj.get_state())
         bj_state = bj.get_state()
-        print "bj state: " + str(bj_state) + " state: " + state
+        print("bj state: " + str(bj_state) + " state: " + state)
         if(state=="Failed" or state=="Done"):
             break
         time.sleep(2)

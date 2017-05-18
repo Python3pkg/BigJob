@@ -53,7 +53,7 @@ if __name__ == "__main__":
             task_desc.output = 'A-stdout.txt'
             task_desc.error  = 'A-stderr.txt'
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_A.append(task)
 
         # submit 'B' tasks to pilot job
@@ -67,13 +67,13 @@ if __name__ == "__main__":
             task_desc.output = 'B-stdout.txt'
             task_desc.error  = 'B-stderr.txt'
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_B.append(task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for 'A' and 'B' tasks to complete..."
+        print("Waiting for 'A' and 'B' tasks to complete...")
         pilotjob.wait()
-        print "Executing 'C' tasks now���"
+        print("Executing 'C' tasks now���")
         # ---------------------------------------------------------------------
 
         # submit 'C' tasks to pilot job. each 'C' task takes the output of
@@ -88,16 +88,16 @@ if __name__ == "__main__":
             task_desc.output = 'C-stdout.txt'
             task_desc.error  = 'C-stderr.txt'
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'C' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'C' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_C.append(task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for 'C' tasks to complete..."
+        print("Waiting for 'C' tasks to complete...")
         pilotjob.wait()
         # ---------------------------------------------------------------------
 
-    except Exception, ex:
-        print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+        print("AN ERROR OCCURED: %s" % ((str(ex))))
         # print a stack trace in case of an exception -
         # this can be helpful for debugging the problem
         traceback.print_exc()

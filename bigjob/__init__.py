@@ -9,7 +9,7 @@ version = "latest"
 #READ config
 
 try:
-    import ConfigParser
+    import configparser
     _CONFIG_FILE="bigjob.conf"
     _conf_file = os.path.dirname(os.path.abspath( __file__ )) + "/../" + _CONFIG_FILE
     if not os.path.exists(_conf_file):
@@ -18,7 +18,7 @@ try:
     
     #print "using conf file: " + str(_conf_file)
 
-    _config = ConfigParser.ConfigParser()
+    _config = configparser.ConfigParser()
     _config.read(_conf_file)
     default_dict = _config.defaults()
     
@@ -41,7 +41,7 @@ try:
     else:
         # 4 = DEBUG + INFO + WARNING + ERROR
         if BIGJOB_VERBOSE >= 4:
-            print "set to DEBUG"
+            print("set to DEBUG")
             logging_level = logging.DEBUG
         # 3 = INFO + WARNING + ERROR
         elif BIGJOB_VERBOSE == 3:

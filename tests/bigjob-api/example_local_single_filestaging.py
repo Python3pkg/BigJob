@@ -36,7 +36,7 @@ sys.path.insert(0, os.path.join(os.getcwd(), ".."))
 #sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 #sys.path.insert(0, os.getcwd() + "/../")
 
-print(str(sys.path))
+print((str(sys.path)))
 from bigjob import bigjob, subjob, description
 
 def main():
@@ -69,7 +69,7 @@ def main():
    
     ##########################################################################################
 
-    print "Start Pilot Job/BigJob at: " + lrms_url
+    print("Start Pilot Job/BigJob at: " + lrms_url)
     bj = bigjob(COORDINATION_URL)
     
     #bj_filetransfers = ["ssh://" + os.path.dirname(os.path.abspath(__file__)) 
@@ -86,7 +86,7 @@ def main():
                         processes_per_node,
                         bj_filetransfers)
     
-    print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state())
+    print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state()))
 
     ##########################################################################################
     # Submit SubJob through BigJob
@@ -108,7 +108,7 @@ def main():
     # busy wait for completion
     while 1:
         state = str(sj.get_state())
-        print "state: " + state
+        print("state: " + state)
         if(state=="Failed" or state=="Done"):
             break
         time.sleep(2)

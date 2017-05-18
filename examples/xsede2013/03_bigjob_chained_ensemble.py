@@ -55,7 +55,7 @@ if __name__ == "__main__":
             task_desc.output = 'A-stdout.txt'
             task_desc.error  = 'A-stderr.txt'
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_A.append(task)
 
         # Chaining tasks i.e submit a compute unit, when compute unit from A is successfully executed.
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         while len(task_set_A) > 0:
             for a_task in task_set_A:
                 if a_task.get_state() == "Done":
-                    print "One 'A' task %s finished. Launching a 'B' task." % (a_task.get_id())
+                    print("One 'A' task %s finished. Launching a 'B' task." % (a_task.get_id()))
                     task_desc = pilot.ComputeUnitDescription()
                     task_desc.executable = '/bin/cat'
                     task_desc.arguments = ["%s/A-stdout.txt" % a_task.get_local_working_directory()]
@@ -73,12 +73,12 @@ if __name__ == "__main__":
                     task_desc.output = 'B-stdout.txt'
                     task_desc.error  = 'B-stderr.txt'
                     task = pilotjob.submit_compute_unit(task_desc)
-                    print "* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id())
+                    print("* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id()))
                     task_set_B.append(task)
                     task_set_A.remove(a_task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for 'B' tasks to finish..."
+        print("Waiting for 'B' tasks to finish...")
         pilotjob.wait()
         # ---------------------------------------------------------------------
 
@@ -88,12 +88,12 @@ if __name__ == "__main__":
         for task in task_set_B:
             local_filename = "ex3-stdout-%s.txt" % (task.get_id())
             d.copy("%s/B-stdout.txt" % (task.get_local_working_directory()), "file://localhost/%s/%s" % (os.getcwd(), local_filename))
-            print "* Output for '%s' copied to: './%s'" % (task.get_id(), local_filename)
+            print("* Output for '%s' copied to: './%s'" % (task.get_id(), local_filename))
 
         sys.exit(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

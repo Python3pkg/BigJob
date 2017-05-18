@@ -9,7 +9,7 @@ import threading
 import time
 import pdb
 import traceback
-import ConfigParser
+import configparser
 import types
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -62,7 +62,7 @@ class bigjob_agent:
         # conf_file = os.path.dirname(args[0]) + "/" + CONFIG_FILE
         # conf_file = os.path.dirname(os.path.abspath( __file__ )) + "/" + CONFIG_FILE
         conf_file = os.path.dirname(os.path.abspath( __file__ )) + "/../" + CONFIG_FILE
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         logging.debug ("read configfile: " + conf_file)
         config.read(conf_file)
         default_dict = config.defaults()        
@@ -178,7 +178,7 @@ class bigjob_agent:
                 node_dict[i] = num_cpus
     
         self.freenodes=[]
-        for i in node_dict.keys():
+        for i in list(node_dict.keys()):
             logging.debug("host: " + i + " nodes: " + str(node_dict[i]))
             for j in range(0, node_dict[i]):
                 logging.debug("add host: " + i.strip())
@@ -213,17 +213,17 @@ class bigjob_agent:
                 #job_dict["state"]=str(saga.job.New)                
                 logging.debug("Start job: " + str(job_dict))        
                 numberofprocesses = "1"
-                if (job_dict.has_key("NumberOfProcesses") == True):
+                if (("NumberOfProcesses" in job_dict) == True):
                     numberofprocesses = job_dict["NumberOfProcesses"]
                 
                 spmdvariation="single"
-                if (job_dict.has_key("SPMDVariation") == True):
+                if (("SPMDVariation" in job_dict) == True):
                     spmdvariation = job_dict["SPMDVariation"]
                 
                 arguments = ""
-                if (job_dict.has_key("Arguments") == True):
+                if (("Arguments" in job_dict) == True):
                     arguments_raw = job_dict['Arguments'];
-                    if type(arguments_raw) == types.ListType:
+                    if type(arguments_raw) == list:
                         arguments_list = arguments_raw
                     else:
                         arguments_list = eval(job_dict["Arguments"])                    
@@ -231,26 +231,26 @@ class bigjob_agent:
                         arguments = arguments + " " + i
                         
                 workingdirectory = os.getcwd()
-                if (job_dict.has_key("WorkingDirectory") == True):
+                if (("WorkingDirectory" in job_dict) == True):
                         workingdirectory =  job_dict["WorkingDirectory"]
                 
                 environment = os.environ
-                if (job_dict.has_key("Environment") == True):
+                if (("Environment" in job_dict) == True):
                     for i in job_dict["Environment"]:
                         env = i.split("=")
                         environment[env[0]]=env[1] + ":" +  environment[env[0]]                        
                         
                 environment["PATH"]= workingdirectory + ":"+environment["PATH"]   
-                print "environment[PATH]", environment["PATH"]
+                print("environment[PATH]", environment["PATH"])
                 executable = job_dict["Executable"]
                 
                 
                 output="stdout"
-                if (job_dict.has_key("Output") == True):
+                if (("Output" in job_dict) == True):
                     output = job_dict["Output"]
                         
                 error="stderr"
-                if (job_dict.has_key("Error") == True):
+                if (("Error" in job_dict) == True):
                     error = job_dict["Error"]
                
                 # append job to job list
@@ -300,7 +300,7 @@ class bigjob_agent:
                 
                 #for condor debugging 
                 dirlist = os.listdir(workingdirectory)
-                print dirlist
+                print(dirlist)
                 os.system("ls;pwd")
                 
                 self.processes[job_url] = p
@@ -360,7 +360,7 @@ class bigjob_agent:
         
         nodefile_string=""
         for i in allocated_nodes:
-            if i.has_key("private_hostname"):
+            if "private_hostname" in i:
                 nodefile_string=nodefile_string + "host "+ i["private_hostname"] + " ++cpus " + str(i["cpu_count"]) + " ++shell ssh\n"
             else:
                 nodefile_string=nodefile_string + "host "+ i["hostname"] + " ++cpus " + str(i["cpu_count"]) + " ++shell ssh\n"
@@ -480,7 +480,7 @@ class bigjob_agent:
         #pdb.set_trace()
         logging.debug("Monitor jobs - # current jobs: %d"%len(self.jobs))
         for i in self.jobs:
-            if self.processes.has_key(i): # only if job has already been starteds
+            if i in self.processes: # only if job has already been starteds
                 p = self.processes[i]
                 p_state = p.poll()
                 logging.debug(self.print_job(i) + " state: " + str(p_state) + " return code: " + str(p.returncode))
@@ -540,7 +540,7 @@ class bigjob_agent:
         except:
             pass
         logging.debug("Pilot State: " + str(state))
-        if state==None or state.has_key("stopped")==False or state["stopped"]==True:
+        if state==None or ("stopped" in state)==False or state["stopped"]==True:
             return True
         else:
             return False
@@ -557,7 +557,7 @@ if __name__ == "__main__" :
     args = sys.argv
     num_args = len(args)
     if (num_args!=3):
-        print "Usage: \n " + args[0] + " <coordination host url> <coordination namespace url>"
+        print("Usage: \n " + args[0] + " <coordination host url> <coordination namespace url>")
         sys.exit(1)
     
     bigjob_agent = bigjob_agent(args)    

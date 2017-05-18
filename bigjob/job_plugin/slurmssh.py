@@ -47,7 +47,7 @@ class Job(object):
         self.working_directory = pilot_compute_description["working_directory"]
         ### convert walltime in minutes to SLURM representation of time ###
         walltime_slurm="1:00:00"
-        if pilot_compute_description.has_key("walltime"):    
+        if "walltime" in pilot_compute_description:    
             hrs=int(pilot_compute_description["walltime"])/60 
             minu=int(pilot_compute_description["walltime"])%60 
             walltime_slurm=""+str(hrs)+":"+str(minu)+":00"
@@ -197,4 +197,4 @@ if __name__ == "__main__":
     slurm_service = Service("slurm+ssh://stampede.tacc.utexas.edu")
     j = slurm_service.create_job("")
     j.run()
-    print j.get_state()
+    print(j.get_state())

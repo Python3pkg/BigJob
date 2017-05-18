@@ -79,7 +79,7 @@ def main():
 	# -------- END USER DEFINED TASK 1 DESCRIPTION --------- #
 
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'A' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_A.append(task)
 
 
@@ -99,13 +99,13 @@ def main():
 	# -------- END USER DEFINED TASK 2 DESCRIPTION --------- #
 
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'B' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_B.append(task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for 'A' and 'B' tasks to complete..."
+        print("Waiting for 'A' and 'B' tasks to complete...")
         pilotjob.wait()
-	print "Executing 'C' tasks now..."
+	print("Executing 'C' tasks now...")
         # ---------------------------------------------------------------------
 
         # submit 'C' tasks to pilot job. each 'C' task takes the output of
@@ -124,18 +124,18 @@ def main():
             # -------- END USER DEFINED TASK 3 DESCRIPTION --------- #
 
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted 'C' task '%s' with id '%s'" % (i, task.get_id())
+            print("* Submitted 'C' task '%s' with id '%s'" % (i, task.get_id()))
             task_set_C.append(task)
 
         # ---------------------------------------------------------------------
-        print "Waiting for 'C' tasks to complete..."
+        print("Waiting for 'C' tasks to complete...")
         pilotjob.wait()
         # ---------------------------------------------------------------------
 
         return(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURRED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURRED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

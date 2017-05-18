@@ -23,7 +23,7 @@ total = 0.0
 
 for i in range(0, N):
 
-    print "start  %3d" % i
+    print("start  %3d" % i)
 
     pilot_description = pilot.PilotComputeDescription()
     pilot_description.service_url = HOST
@@ -50,10 +50,10 @@ stop = time.time()
 # see https://github.com/saga-project/BigJob/issues/131
 
 for i, pj in enumerate(pjs):
-    print "cancel %3d" % i
+    print("cancel %3d" % i)
     pj.cancel()
 
 pilot_service.cancel()
 
 
-print "time: %.1fs   rate: %.1f/s" % (stop-start, N/(stop-start))
+print("time: %.1fs   rate: %.1f/s" % (stop-start, N/(stop-start)))

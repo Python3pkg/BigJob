@@ -11,10 +11,10 @@ import time
 import threading
 import logging
 import pdb
-import Queue
+import queue
 import uuid
 import traceback
-import urlparse
+import urllib.parse
 
 from bigjob import logger
 
@@ -70,8 +70,8 @@ class ComputeDataService(ComputeDataService):
            
         # Background Thread for scheduling
         self.scheduler = Scheduler()
-        self.cu_queue = Queue.Queue()
-        self.du_queue = Queue.Queue()
+        self.cu_queue = queue.Queue()
+        self.du_queue = queue.Queue()
         self.stop=threading.Event()
         self.scheduler_thread=threading.Thread(target=self._scheduler_thread)
         self.scheduler_thread.daemon=True
@@ -150,11 +150,11 @@ class ComputeDataService(ComputeDataService):
     
     def list_data_units(self):
         """ List all DUs of CDS """
-        return self.data_units.items()
+        return list(self.data_units.items())
     
     
     def get_data_unit(self, du_id):
-        if self.data_units.has_key(du_id):
+        if du_id in self.data_units:
             return self.data_units[du_id]
         return None
     
@@ -190,11 +190,11 @@ class ComputeDataService(ComputeDataService):
             self.du_queue.join()
             logger.debug("DU queue empty")        
     
-            for i in self.data_units.values():
+            for i in list(self.data_units.values()):
                 i.wait()
             logger.debug("DUs done")        
                 
-            for i in self.compute_units.values():
+            for i in list(self.compute_units.values()):
                 i.wait()     
             logger.debug("CUs done")        
                    
@@ -264,7 +264,7 @@ class ComputeDataService(ComputeDataService):
                     else:
                         self.du_queue.task_done() 
                         self.du_queue.put(du)
-            except Queue.Empty:
+            except queue.Empty:
                 pass
                     
             try:    
@@ -281,7 +281,7 @@ class ComputeDataService(ComputeDataService):
                         logger.debug("No resource found.")
                         self.cu_queue.task_done() 
                         self.cu_queue.put(cu)
-            except Queue.Empty:
+            except queue.Empty:
                 pass
             except:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -300,9 +300,9 @@ class ComputeDataService(ComputeDataService):
     def __wait_for_du(self, compute_unit):
         """ wait for Data Units that are required for Compute Unit """
         cu_description = compute_unit.compute_unit_description
-        if cu_description.has_key("input_data") and len(cu_description["input_data"])>0:
+        if "input_data" in cu_description and len(cu_description["input_data"])>0:
             for input_du_url in cu_description["input_data"]:
-                for du in self.data_units.values():
+                for du in list(self.data_units.values()):
                     if input_du_url == du.get_url():
                         logger.debug("Wait for DU: %s"%du.get_url())
                         du.wait()      

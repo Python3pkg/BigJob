@@ -79,16 +79,16 @@ def main():
             # -------- END USER DEFINED TASK DESCRIPTION --------- #
 
             task = pilotjob.submit_compute_unit(task_desc)
-            print "* Submitted task '%s' with id '%s' to %s" % (i, task.get_id(), HOSTNAME)
+            print("* Submitted task '%s' with id '%s' to %s" % (i, task.get_id(), HOSTNAME))
             tasks.append(task)
 
-        print "Waiting for tasks to finish..."
+        print("Waiting for tasks to finish...")
         pilotjob.wait()
 
         return(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURRED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURRED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

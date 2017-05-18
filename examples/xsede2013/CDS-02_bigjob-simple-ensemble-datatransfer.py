@@ -58,16 +58,16 @@ def main():
             task_desc.error = 'simple-ensemble-stderr.txt'
 
             task = compute_data_service.submit_compute_unit(task_desc)
-            print "* Submitted task '%s' with id '%s' to %s" % (i, task.get_id(), HOSTNAME)
+            print("* Submitted task '%s' with id '%s' to %s" % (i, task.get_id(), HOSTNAME))
             tasks.append(task)
 
-        print "Waiting for tasks to finish..."
+        print("Waiting for tasks to finish...")
         compute_data_service.wait()
 
         # all compute units have finished. now we can use saga-python
         # to transfer back the output files...
         for task in tasks:
-            print task.get_local_working_directory()
+            print(task.get_local_working_directory())
         #    d = saga.filesystem.Directory("sftp://%s/%s" % (HOSTNAME, task.get_local_working_directory()))
         #    local_filename = "stdout-%s.txt" % (task.get_id())
         #    d.copy("simple-ensemble-stdout.txt", "file://localhost/%s/%s" % (os.getcwd(), local_filename))
@@ -75,8 +75,8 @@ def main():
 
         return(0)
 
-    except Exception, ex:
-            print "AN ERROR OCCURED: %s" % ((str(ex)))
+    except Exception as ex:
+            print("AN ERROR OCCURED: %s" % ((str(ex))))
             # print a stack trace in case of an exception -
             # this can be helpful for debugging the problem
             traceback.print_exc()

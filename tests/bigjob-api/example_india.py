@@ -64,7 +64,7 @@ def main():
    
     ##########################################################################################
 
-    print "Start Pilot Job/BigJob at: " + lrms_url
+    print("Start Pilot Job/BigJob at: " + lrms_url)
     bj = bigjob(COORDINATION_URL)
     bj.start_pilot_job( lrms_url,
                         number_nodes,
@@ -75,7 +75,7 @@ def main():
                         walltime,
                         processes_per_node)
     
-    print "Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state())
+    print("Pilot Job/BigJob URL: " + bj.pilot_url + " State: " + str(bj.get_state()))
 
     ##########################################################################################
     # Submit SubJob through BigJob

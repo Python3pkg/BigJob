@@ -74,10 +74,10 @@ if __name__ == "__main__":
     du1.export("/tmp/pilot-data-export/")
     #du2.export("ssh://hotel.futuregrid.org/N/u/luckow/pilot-store-export/")
         
-    print "***************************************************************"
-    print "To reconnect to Data Unit 1 use the following URL: %s"%du1.url
-    print "Run:\n\n " + sys.executable + " example-pilot-data-reconnect.py %s"%du1.url
-    print "\n\n******************* SLEEPING *********************************"
+    print("***************************************************************")
+    print("To reconnect to Data Unit 1 use the following URL: %s"%du1.url)
+    print("Run:\n\n " + sys.executable + " example-pilot-data-reconnect.py %s"%du1.url)
+    print("\n\n******************* SLEEPING *********************************")
     #time.sleep(1200)
     
     logging.debug("Terminate Pilot Data/Compute Data Service")
